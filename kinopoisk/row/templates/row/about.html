@@ -1,0 +1,158 @@
+{% extends 'row/layout.html' %}
+
+{% block title %}Подробнее{% endblock %}
+
+{% block content %}
+<style>
+    .imgsize {
+                width: 470px;
+                height: 500px;
+                border: 2px solid #fff;
+                margin-top: 15px;
+    }
+    .osn {
+        margin-left: 280px;
+    }
+    .qwer {
+        margin-left: 280px;
+    }
+        .imgdiv {
+                width: 490px;
+                height: 520px;
+                display: inline-block;
+                vertical-align: top;
+                margin-left: 10px;
+
+    }
+        .tex {
+            margin-top: 15px;
+            color: #E6E6FA;
+        }
+        .t {
+            color:  #E6E6FA;
+            font-size: 24px;
+        }
+
+        .ter {
+            margin-top: 40px;
+        }
+        .rex {
+            color: #E6E6FA;
+            margin-left: 280px;
+        }
+        .wer {
+            text-transform: uppercase;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+            margin: 1.5em 0 2em 0;
+            color: #E6E6FA;
+        }
+        .imgshots {
+            max-width: 250px;
+            height: 180px;
+        }
+        .cer {
+            margin-left: 103px;
+        }
+         .cerx {
+            margin-left: 97px;
+        }
+</style>
+    <div class="osn">
+        <div class="imgdiv">
+            <img src="{{ kinos.poster.url }}" class="imgsize" alt="">
+        </div>
+        <div class="imgdiv">
+            <h3 class="tex">{{ kinos.title }}</h3>
+            <div class="ter">
+                <ul>
+                    <li class="t"><span><b>Год :</b>{{ kinos.world_premiere }}</span></li>
+                    <li class="t"><span><b>Страна :</b>{{ kinos.country }}</span></li>
+                    <li class="t"><span><b>Слоган :</b>{{ kinos.slogan }}</span></li>
+                    <li class="t"><span><b>Режиссер :</b>
+                        {% for director in kinos.directors.all %}
+                            {{ director.name }}
+                        {% endfor %}
+                    </span></li>
+                    <li class="t"><span><b>Актеры :</b>
+                        {% for actor in kinos.actors.all %}
+                            {{ actor.name }}
+                        {% endfor %}</span></li>
+                    <li class="t"><span><b>Бюджет :</b>{{ kinos.budget }}</span></li>
+                    <li class="t"><span><b>Сборы :</b>{{ kinos.sbor }}</span></li>
+                    <li class="t"><span><b>Жанр :</b>
+                        {% for genr in kinos.genre.all %}
+                            {{ genr.name }}
+                        {% endfor %}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="qwer">
+        <h3 class="wer">О фильме {{ kinos.title }} </h3>
+        <p style="    font-size: 0.9em;
+    color: #8c9398;
+    line-height: 2em;
+    letter-spacing: 1px;">
+            {% for image in kinos.movieshots_set.all %}
+                <img src="{{ image.image.url }}" class="imgshots" alt="{{ image.description }}">
+            {% endfor %}
+        </p>
+    </div>
+    <div class="rex">
+        <h3 style="margin-left: 10px;">{{ kinos.description }}</h3>
+    </div>
+
+    <div style="display: inline-block; margin-top: 30px;">
+        <form action="{% url 'add_review' kinos.id %}" method="post" class="form" id="formReview">
+            {% csrf_token %}
+            <input type="hidden" name="parent", id="contactparent" value="">
+ <div>
+                                        <label for="contactcomment" style="color: #E6E6FA;">Ваш комментарий
+                                            *</label>
+                                        <textarea id="contactcomment" name="text"></textarea>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <label for="contactusername"  style="color: #E6E6FA;">Имя
+                                                *</label>
+                                            <input class="cer" type="text"
+                                                   id="contactusername" name="name">
+                                        </div>
+                                        <div>
+                                            <label for="contactemail"  style="color: #E6E6FA;">Email
+                                                *</label>
+                                            <input class="cerx" type="email"
+                                                   id="contactemail" name="email">
+                                        </div>
+                                         <button type="submit">Отправить</button>
+                                    </div>
+
+        </form>
+    </div>
+{% for review in kinos.reviews_set.all %}
+     <div style="display: inline-block; margin-top: 50px; margin-left: 250px;">
+            <img src="/row/img/194973.webp" style="color: #E6E6FA;" alt="image">
+                            <div>
+
+                                    <h5 style="color: #E6E6FA;">{{ review.name }}</h5>
+                                    <p style="color: #E6E6FA;">
+                                    {{ review.text }}
+                                    </p>
+                                    <a href="#formReview" onclick="addReview('{{ review.name }}' , '{{ review.id }}')">Ответить</a>
+
+                            </div>
+
+     </div>
+{% endfor %}
+<script>
+    function addReview(name, id) {
+        document.getElementById("contactparent").value = id;
+        document.getElementById("contactcomment").innerText = `${name},`
+    }
+</script>
+
+{% endblock %}
+
+
+
